@@ -1,7 +1,7 @@
-﻿using BookWormWeb.Models;
+﻿using BookWorm.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookWormWeb.Data
+namespace BookWorm.DataAccess
 {
     public class ApplicationDatabaseContext : DbContext
     {
