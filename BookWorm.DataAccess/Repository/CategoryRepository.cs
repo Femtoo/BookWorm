@@ -12,15 +12,10 @@ namespace BookWorm.DataAccess.Repository
 {
     public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
-        private readonly ApplicationDatabaseContext _db;       
+        private ApplicationDatabaseContext _db;       
         public CategoryRepository(ApplicationDatabaseContext db) : base(db)
         {
             _db = db;
-        }
-
-        public void Save()
-        {
-            _db.SaveChanges();
         }
 
         public void Update(Category obj)
