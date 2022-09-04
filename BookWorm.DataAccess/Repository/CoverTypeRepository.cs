@@ -1,6 +1,5 @@
 ﻿using BookWorm.DataAccess.Repository.IRepository;
 using BookWorm.Models;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace BookWorm.DataAccess.Repository
 {
-    public class CategoryRepository : Repository<Category>, ICategoryRepository
+    public class CoverTypeRepository : Repository<CoverType>, ICoverTypeRepository
     {
-        private ApplicationDatabaseContext _db;       
-        public CategoryRepository(ApplicationDatabaseContext db) : base(db)
+        private ApplicationDatabaseContext _db;
+        public CoverTypeRepository(ApplicationDatabaseContext db) : base(db)
         {
             _db = db;
         }
 
-        public void Update(Category obj)
+        public void Update(CoverType obj)
         {
-            _db.Categories.Update(obj);
+            _db.CoverTypes.Update(obj);
         }
     }
 }
