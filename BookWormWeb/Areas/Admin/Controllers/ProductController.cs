@@ -26,42 +26,44 @@ namespace BookWormWeb.Areas.Admin.Controllers
         //get
         public IActionResult Upsert(int? id)
         {
-            ProductVM productVM = new();
-            productVM.Product = new();
-            productVM.CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(
-                u=> new SelectListItem
-                {
-                    Text=u.Name,
-                    Value=u.Id.ToString(),
-                });
-            productVM.CoverTypeList = _unitOfWork.CoverTypeRepository.GetAll().Select(
-                u => new SelectListItem
-                {
-                    Text = u.Name,
-                    Value = u.Id.ToString(),
-                });
+            ProductVM productVM = new()
+            {
+                Product = new(),
+                CategoryList = _unitOfWork.CategoryRepository.GetAll().Select(
+                    u => new SelectListItem
+                    {
+                        Text = u.Name,
+                        Value = u.Id.ToString(),
+                    }),
+                CoverTypeList = _unitOfWork.CoverTypeRepository.GetAll().Select(
+                    u => new SelectListItem
+                    {
+                        Text = u.Name,
+                        Value = u.Id.ToString(),
+                    })
+            };
 
             if (id == null || id == 0)
             {   
                 //create product
-                ViewBag.CategoryList = productVM.CategoryList;
-                ViewData["CoverTypeList"] = productVM.CoverTypeList;
-                return View(productVM.Product);
+                //ViewBag.CategoryList = productVM.CategoryList;
+                //ViewData["CoverTypeList"] = productVM.CoverTypeList;
+                return View(productVM);
             } 
             else
             {
                 //update product
             }
-            return View();
+            return View(productVM);
         }
         //post
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Product obj)
+        public IActionResult Upsert(ProductVM obj, IFormFile file)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.ProductRepository.Update(obj);
+                //_unitOfWork.ProductRepository.Update(obj.Product);
                 _unitOfWork.Save();
                 TempData["success"] = "Product updated successfully";
                 return RedirectToAction("Index");
