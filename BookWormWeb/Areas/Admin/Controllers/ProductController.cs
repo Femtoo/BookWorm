@@ -20,8 +20,7 @@ namespace BookWormWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> objProductList = _unitOfWork.ProductRepository.GetAll();
-            return View(objProductList);
+            return View();
         }
 
         //get
@@ -117,5 +116,14 @@ namespace BookWormWeb.Areas.Admin.Controllers
             return RedirectToAction("Index");
 
         }
+
+        #region API CALLS
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var productList = _unitOfWork.ProductRepository.GetAll(includeProperties:"Category,CoverType");
+            return Json(new { data = productList });
+        }
+        #endregion
     }
 }

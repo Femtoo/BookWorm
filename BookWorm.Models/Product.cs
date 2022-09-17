@@ -35,11 +35,13 @@ namespace BookWorm.Models
         [ValidateNever]
         public string ImageUrl { get; set; }
         [Required]
+        [Display(Name = "Category")]
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         [ValidateNever]
         public Category Category { get; set; }
         [Required]
+        [Display(Name = "Cover Type")]
         public int CoverTypeId { get; set; }
         [ForeignKey("CoverTypeId")]
         [ValidateNever]
