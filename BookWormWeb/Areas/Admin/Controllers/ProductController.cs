@@ -53,13 +53,15 @@ namespace BookWormWeb.Areas.Admin.Controllers
             else
             {
                 //update product
+                productVM.Product=_unitOfWork.ProductRepository.GetFirstOrDefault(u=>u.Id == id);
+                return View(productVM);
             }
-            return View(productVM);
+            
         }
         //post
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(ProductVM obj, IFormFile file)
+        public IActionResult Upsert(ProductVM obj, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -70,51 +72,32 @@ namespace BookWormWeb.Areas.Admin.Controllers
                     var uploads = Path.Combine(wwwRootPath, @"images\products");
                     var extension = Path.GetExtension(file.FileName);
 
+                    if(obj.Product.ImageUrl!=null)
+                    {
+                        var oldImagePath = Path.Combine(wwwRootPath, obj.Product.ImageUrl.TrimStart('\\'));
+                        if(System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
                     using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                     {
                         file.CopyTo(fileStreams);
                     }
-                    obj.Product.ImageUrl = @"\image\products\" + fileName + extension;
+                    obj.Product.ImageUrl = @"\images\products\" + fileName + extension;
                 }
-                _unitOfWork.ProductRepository.Add(obj.Product);
+                if(obj.Product.Id == 0)
+                {
+                    _unitOfWork.ProductRepository.Add(obj.Product);
+                } else {
+                    _unitOfWork.ProductRepository.Update(obj.Product);
+                }
                 _unitOfWork.Save();
                 TempData["success"] = "Product added successfully";
                 return RedirectToAction("Index");
             }
             return View(obj);
-        }
-        //get
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            var productFromDb = _unitOfWork.ProductRepository.GetFirstOrDefault(u => u.Id == id);
-
-            if (productFromDb == null)
-            {
-                return NotFound();
-            }
-            return View(productFromDb);
-        }
-        //post
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeletePOST(int? id)
-        {
-            var productFromDb = _unitOfWork.ProductRepository.GetFirstOrDefault(u => u.Id == id);
-
-            if (productFromDb == null)
-            {
-                return NotFound();
-            }
-            _unitOfWork.ProductRepository.Remove(productFromDb);
-            _unitOfWork.Save();
-            TempData["success"] = "Product deleted successfully";
-
-            return RedirectToAction("Index");
-
         }
 
         #region API CALLS
@@ -123,6 +106,30 @@ namespace BookWormWeb.Areas.Admin.Controllers
         {
             var productList = _unitOfWork.ProductRepository.GetAll(includeProperties:"Category,CoverType");
             return Json(new { data = productList });
+        }
+
+        //post
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            var obj = _unitOfWork.ProductRepository.GetFirstOrDefault(u => u.Id == id);
+
+            if (obj == null)
+            {
+                return Json(new { success = false, message = "Error while deleting" });
+            }
+
+            var oldImagePath = Path.Combine(_hostEnvironment.WebRootPath, obj.ImageUrl.TrimStart('\\'));
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+
+            _unitOfWork.ProductRepository.Remove(obj);
+            _unitOfWork.Save();
+
+            return Json(new { success = true, message = "Delete Successful" });
+
         }
         #endregion
     }

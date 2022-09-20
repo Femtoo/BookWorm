@@ -22,15 +22,19 @@ namespace BookWorm.Models
         public string Author { get; set; }
         [Required]
         [Range(1,10000)]
+        [Display(Name = "List Price")]
         public double ListPrice { get; set; }
         [Required]
         [Range(1, 10000)]
+        [Display(Name = "Price for 1-20")]
         public double Price { get; set; }
         [Required]
         [Range(1, 10000)]
+        [Display(Name = "Price for 21-50")]
         public double Price20 { get; set; }
         [Required]
         [Range(1, 10000)]
+        [Display(Name = "Price for 50+")]
         public double Price50 { get; set; }
         [ValidateNever]
         public string ImageUrl { get; set; }
