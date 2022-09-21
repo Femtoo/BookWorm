@@ -1,9 +1,10 @@
 ﻿using BookWorm.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookWorm.DataAccess
 {
-    public class ApplicationDatabaseContext : DbContext
+    public class ApplicationDatabaseContext : IdentityDbContext
     {
         public ApplicationDatabaseContext(DbContextOptions<ApplicationDatabaseContext> options) : base(options)
         {
