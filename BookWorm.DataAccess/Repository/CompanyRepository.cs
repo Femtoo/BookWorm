@@ -18,16 +18,7 @@ namespace BookWorm.DataAccess.Repository
 
         public void Update(Company obj)
         {
-            var objFromDb = _db.Companies.FirstOrDefault(u => u.Id == obj.Id);
-            if(objFromDb != null)
-            {
-                objFromDb.Name = obj.Name;
-                objFromDb.StreetAddress = obj.StreetAddress;
-                objFromDb.PhoneNumber = obj.PhoneNumber;
-                objFromDb.City = obj.City;
-                objFromDb.PostalCode = obj.PostalCode;
-                objFromDb.State = obj.State;
-            }
+            _db.Companies.Update(obj);
         }
     }
 }
