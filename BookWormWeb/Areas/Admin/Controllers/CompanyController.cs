@@ -8,12 +8,10 @@ namespace BookWormWeb.Areas.Admin.Controllers
     public class CompanyController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public CompanyController(IUnitOfWork unitOfWork, IWebHostEnvironment hostEnvironment)
+        public CompanyController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _hostEnvironment = hostEnvironment;
         }
 
         public IActionResult Index()
@@ -44,13 +42,14 @@ namespace BookWormWeb.Areas.Admin.Controllers
                 if(obj.Id == 0)
                 {
                     _unitOfWork.CompanyRepository.Add(obj);
+                    TempData["success"] = "Product created succesfully";
                 }
                 else
                 {
                     _unitOfWork.CompanyRepository.Update(obj);
+                    TempData["success"] = "Product updated succesfully";
                 }
                 _unitOfWork.Save();
-                TempData["success"] = "Product added succesfully";
                 return RedirectToAction("Index");
             }
             return View(obj);
